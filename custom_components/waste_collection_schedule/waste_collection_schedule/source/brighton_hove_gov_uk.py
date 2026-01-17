@@ -134,12 +134,13 @@ class Source:
         ] = {"value": self._postcode}
         # changes_postcode = [{"SearchString": {"value": self._postcode}}]
 
+        guid = init_data["objects"][2]["guid"]
         params = {
             "Address": {
-                "guid": init_data["objects"][2]["guid"],
+                "guid": guid,
             }
         }
-        validation_guids = [init_data["objects"][2]["guid"]]
+        validation_guids = [guid]
 
         data = self._do_request(
             s,
