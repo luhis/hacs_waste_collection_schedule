@@ -98,21 +98,8 @@ class Source:
         init_data = r.json()
 
         objects = init_data["objects"]
-        # params: dict[str, str | list[str] | dict] = {
-        #     "actionname": "Service_YouAreBeingRedirected.SUB_YouAreBeingRedirected",
-        #     "applyto": "selection",
-        #     "guids": [init_data["objects"][1]["guid"]],
-        # }
         x_csrf_token = init_data["csrftoken"]
         cachebust = init_data["cachebust"]
-
-        # data = self._do_request(
-        #     s,
-        #     action="executeaction",
-        #     x_csrf_token=x_csrf_token,
-        #     objects=objects,
-        #     params=params,
-        # )
 
         r = requests.get(
             BASE_URL + "pages/en_GB/BartecCollective/Jobs_Get_Combined.page.xml?" +
@@ -121,7 +108,6 @@ class Source:
         )
         r.raise_for_status()
 
-        # OPERATION_ID_REGEX = r'"config":{"operationId":"([a-zA-Z0-9/]+)",'
         OPERATION_ID_REGEX = r'"config":{"operationId":"(.+?)",'
         operation_ids = list(re.finditer(OPERATION_ID_REGEX, r.text))
         operation_id_post = operation_ids[0].group(1)
@@ -131,12 +117,19 @@ class Source:
         changes_postcode[list(changes_postcode.keys())[0]][
             "SearchString"
         ] = {"value": self._postcode}
-        # changes_postcode = [{"SearchString": {"value": self._postcode}}]
 
-        guid = init_data["objects"][2]["guid"]
+        # Find Address object from init_data
+        address_obj = next(
+            (o for o in init_data["objects"]
+             if o["objectType"] == "BHCCTheme.Address"),
+            None
+        )
+        if address_obj is None:
+            raise RuntimeError("Address object not found in init_data")
+
         params = {
             "Address": {
-                "guid": guid,
+                "guid": address_obj["guid"],
             }
         }
         validation_guids = list(changes_postcode.keys())
