@@ -140,6 +140,8 @@ class Source:
                 "guid": guid,
             }
         }
+        # Also add the Address object to the objects array
+        objects.append(init_data["objects"][2])
         validation_guids = list(changes_postcode.keys())
 
         data = self._do_request(
