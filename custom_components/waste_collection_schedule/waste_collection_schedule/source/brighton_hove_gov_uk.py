@@ -97,26 +97,26 @@ class Source:
 
         init_data = r.json()
 
-        objects = [init_data["objects"][1]]
-        params: dict[str, str | list[str] | dict] = {
-            "actionname": "Service_YouAreBeingRedirected.SUB_YouAreBeingRedirected",
-            "applyto": "selection",
-            "guids": [init_data["objects"][1]["guid"]],
-        }
+        # objects = [init_data["objects"][1]]
+        # params: dict[str, str | list[str] | dict] = {
+        #     "actionname": "Service_YouAreBeingRedirected.SUB_YouAreBeingRedirected",
+        #     "applyto": "selection",
+        #     "guids": [init_data["objects"][1]["guid"]],
+        # }
         x_csrf_token = init_data["csrftoken"]
         cachebust = init_data["cachebust"]
 
-        data = self._do_request(
-            s,
-            action="executeaction",
-            x_csrf_token=x_csrf_token,
-            objects=objects,
-            params=params,
-        )
+        # data = self._do_request(
+        #     s,
+        #     action="executeaction",
+        #     x_csrf_token=x_csrf_token,
+        #     objects=objects,
+        #     params=params,
+        # )
 
         r = requests.get(
-            BASE_URL + "pages/en_GB/" +
-            data["instructions"][0]["args"]["FormPath"],
+            BASE_URL + "pages/en_GB/BartecCollective/Jobs_Get_Combined.page.xml?" +
+            cachebust,
             params={cachebust: ""},
         )
         r.raise_for_status()
