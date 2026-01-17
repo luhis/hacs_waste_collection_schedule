@@ -97,7 +97,7 @@ class Source:
 
         init_data = r.json()
 
-        objects = [init_data["objects"][1]]
+        objects = init_data["objects"]
         # params: dict[str, str | list[str] | dict] = {
         #     "actionname": "Service_YouAreBeingRedirected.SUB_YouAreBeingRedirected",
         #     "applyto": "selection",
@@ -140,8 +140,6 @@ class Source:
                 "guid": guid,
             }
         }
-        # Also add the Address object to the objects array
-        objects.append(init_data["objects"][2])
         validation_guids = list(changes_postcode.keys())
 
         data = self._do_request(
