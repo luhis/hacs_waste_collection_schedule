@@ -127,7 +127,6 @@ class Source:
         operation_id_post = operation_ids[0].group(1)
         operation_id_uprn = operation_ids[1].group(1)
 
-        # objects = data["objects"]
         changes_postcode = init_data["changes"]
         changes_postcode[list(changes_postcode.keys())[0]][
             "SearchString"
@@ -146,7 +145,7 @@ class Source:
             s,
             action="runtimeOperation",
             x_csrf_token=x_csrf_token,
-            objects=objects,
+            objects=objects[1:],
             changes=changes_postcode,
             operation_id=operation_id_post,
             params=params,
