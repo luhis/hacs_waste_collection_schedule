@@ -140,7 +140,7 @@ class Source:
                 "guid": guid,
             }
         }
-        validation_guids = [guid]
+        validation_guids = list(changes_postcode.keys())
 
         data = self._do_request(
             s,
