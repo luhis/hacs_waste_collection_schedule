@@ -97,7 +97,7 @@ class Source:
 
         init_data = r.json()
 
-        # objects = [init_data["objects"][1]]
+        objects = [init_data["objects"][1]]
         # params: dict[str, str | list[str] | dict] = {
         #     "actionname": "Service_YouAreBeingRedirected.SUB_YouAreBeingRedirected",
         #     "applyto": "selection",
@@ -127,18 +127,19 @@ class Source:
         operation_id_post = operation_ids[0].group(1)
         operation_id_uprn = operation_ids[1].group(1)
 
-        objects = data["objects"]
-        changes_postcode = data["changes"]
+        # objects = data["objects"]
+        changes_postcode = init_data["changes"]
         changes_postcode[list(changes_postcode.keys())[0]][
             "SearchString"
         ] = {"value": self._postcode}
+        # changes_postcode = [{"SearchString": {"value": self._postcode}}]
 
         params = {
-            "OS_MissedBinEnquiry": {
-                "guid": data["objects"][0]["guid"],
+            "Address": {
+                "guid": init_data["objects"][2]["guid"],
             }
         }
-        validation_guids = [data["objects"][0]["guid"]]
+        validation_guids = [init_data["objects"][2]["guid"]]
 
         data = self._do_request(
             s,
