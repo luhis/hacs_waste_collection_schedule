@@ -56,9 +56,9 @@ class Source:
         changes: dict = {},
         objects: list = [],
         params: dict[str, str | list[str] | dict] = {},
-        #profile_data: dict[str, int] = {},
+        # profile_data: dict[str, int] = {},
         operation_id: str | None = None,
-        #validation_guids: list[str] | None = None,
+        # validation_guids: list[str] | None = None,
     ) -> dict:
         time_str = str(int(time.time()))
         headers = {
@@ -112,7 +112,7 @@ class Source:
         operation_ids = list(re.finditer(OPERATION_ID_REGEX, r.text))
         operation_id_post = operation_ids[0].group(1)
         OPERATION_ID2_REGEX = r'"config":{"operationId":"(.+?)","progress":{"message":"Finding your next collections'
-        operation_ids2 = list(re.finditer(OPERATION_ID_REGEX, r.text))
+        operation_ids2 = list(re.finditer(OPERATION_ID2_REGEX, r.text))
         operation_id_uprn = operation_ids2[0].group(1)
 
         changes_postcode = init_data["changes"]
@@ -177,12 +177,13 @@ class Source:
             objects=objects,
             operation_id=operation_id_uprn,
             x_csrf_token=x_csrf_token,
-            #validation_guids=validation_guids,
+            # validation_guids=validation_guids,
             params=params,
         )
 
         entries = []
-        for change in data["changes"].values():
+        print(data["objects"].values())
+        for change in data["objects"].values():
             for key, value in change.items():
                 if not key.startswith("Next"):
                     continue
