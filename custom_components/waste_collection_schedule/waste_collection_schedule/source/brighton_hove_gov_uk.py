@@ -56,9 +56,7 @@ class Source:
         changes: dict = {},
         objects: list = [],
         params: dict[str, str | list[str] | dict] = {},
-        # profile_data: dict[str, int] = {},
         operation_id: str | None = None,
-        # validation_guids: list[str] | None = None,
     ) -> dict:
         time_str = str(int(time.time()))
         headers = {
@@ -73,12 +71,9 @@ class Source:
             "changes": changes,
             "objects": objects,
             "params": params,
-            # "profiledata": profile_data,
         }
         if operation_id:
             payload["operationId"] = operation_id
-        # if validation_guids:
-        #     payload["validationGuids"] = validation_guids
 
         r = s.post(API_URL, json=payload, headers=headers)
         if r.status_code != 200:
@@ -177,26 +172,22 @@ class Source:
             objects=objects,
             operation_id=operation_id_uprn,
             x_csrf_token=x_csrf_token,
-            # validation_guids=validation_guids,
             params=params,
         )
 
         entries = []
-        print(data["objects"].values())
         for change in data["objects"].values():
-            for key, value in change.items():
-                if not key.startswith("Next"):
-                    continue
-                # Tuesday 07/01/2025
-                date_str = value["value"]
-                bin_type = key.replace("Next", "")
-                try:
-                    date = datetime.strptime(date_str, "%A %d/%m/%Y").date()
-                except ValueError:
-                    _LOGGER.warning(
-                        f"Could not parse date: {date_str} for bin type {bin_type}"
-                    )
-                icon = ICON_MAP.get(bin_type)
-                entries.append(Collection(date=date, t=bin_type, icon=icon))
+            value = change["attributes"]
+            # Tuesday 07/01/2025
+            date_str = value["Collection_Date"]["value"]
+            bin_type = value["Collection_type"]["value"]
+            try:
+                date = datetime.strptime(date_str, "%A %d/%m/%Y").date()
+            except ValueError:
+                _LOGGER.warning(
+                    f"Could not parse date: {date_str} for bin type {bin_type}"
+                )
+            icon = ICON_MAP.get(bin_type)
+            entries.append(Collection(date=date, t=bin_type, icon=icon))
 
         return entries
