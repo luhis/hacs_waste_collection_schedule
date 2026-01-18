@@ -56,9 +56,9 @@ class Source:
         changes: dict = {},
         objects: list = [],
         params: dict[str, str | list[str] | dict] = {},
-        profile_data: dict[str, int] = {},
+        #profile_data: dict[str, int] = {},
         operation_id: str | None = None,
-        validation_guids: list[str] | None = None,
+        #validation_guids: list[str] | None = None,
     ) -> dict:
         time_str = str(int(time.time()))
         headers = {
@@ -73,12 +73,12 @@ class Source:
             "changes": changes,
             "objects": objects,
             "params": params,
-            "profiledata": profile_data,
+            # "profiledata": profile_data,
         }
         if operation_id:
             payload["operationId"] = operation_id
-        if validation_guids:
-            payload["validationGuids"] = validation_guids
+        # if validation_guids:
+        #     payload["validationGuids"] = validation_guids
 
         r = s.post(API_URL, json=payload, headers=headers)
         if r.status_code != 200:
@@ -108,10 +108,12 @@ class Source:
         )
         r.raise_for_status()
 
-        OPERATION_ID_REGEX = r'"config":{"operationId":"(.+?)",'
+        OPERATION_ID_REGEX = r'"config":{"operationId":"(.+?)","progress":{"message":"Looking up the address'
         operation_ids = list(re.finditer(OPERATION_ID_REGEX, r.text))
         operation_id_post = operation_ids[0].group(1)
-        operation_id_uprn = operation_ids[1].group(1)
+        OPERATION_ID2_REGEX = r'"config":{"operationId":"(.+?)","progress":{"message":"Finding your next collections'
+        operation_ids2 = list(re.finditer(OPERATION_ID_REGEX, r.text))
+        operation_id_uprn = operation_ids2[0].group(1)
 
         changes_postcode = init_data["changes"]
         changes_postcode[list(changes_postcode.keys())[0]][
@@ -132,7 +134,6 @@ class Source:
                 "guid": address_obj["guid"],
             }
         }
-        validation_guids = list(changes_postcode.keys())
 
         data = self._do_request(
             s,
@@ -142,7 +143,6 @@ class Source:
             changes=changes_postcode,
             operation_id=operation_id_post,
             params=params,
-            validation_guids=validation_guids,
         )
 
         uprn_chage_element: tuple[str, dict] | None = None
@@ -177,7 +177,7 @@ class Source:
             objects=objects,
             operation_id=operation_id_uprn,
             x_csrf_token=x_csrf_token,
-            validation_guids=validation_guids,
+            #validation_guids=validation_guids,
             params=params,
         )
 
