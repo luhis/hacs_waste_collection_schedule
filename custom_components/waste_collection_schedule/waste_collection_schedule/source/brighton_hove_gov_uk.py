@@ -103,12 +103,17 @@ class Source:
         )
         r.raise_for_status()
 
-        OPERATION_ID_REGEX = r'"config":{"operationId":"(.+?)","progress":{"message":"Looking up the address'
-        operation_ids = list(re.finditer(OPERATION_ID_REGEX, r.text))
-        operation_id_post = operation_ids[0].group(1)
-        OPERATION_ID2_REGEX = r'"config":{"operationId":"(.+?)","progress":{"message":"Finding your next collections'
-        operation_ids2 = list(re.finditer(OPERATION_ID2_REGEX, r.text))
-        operation_id_uprn = operation_ids2[0].group(1)
+        OPERATION_ID_REGEX = r'"operationId":"([A-Za-z0-9+/=]+)","progress":\{"message":"Looking up the address'
+        match_post = re.search(OPERATION_ID_REGEX, r.text)
+        if not match_post:
+            raise RuntimeError("Failed to find postcode lookup operationId")
+        operation_id_post = match_post.group(1)
+
+        OPERATION_ID2_REGEX = r'"operationId":"([A-Za-z0-9+/=]+)","progress":\{"message":"Finding your next collections'
+        match_uprn = re.search(OPERATION_ID2_REGEX, r.text)
+        if not match_uprn:
+            raise RuntimeError("Failed to find UPRN operationId")
+        operation_id_uprn = match_uprn.group(1)
 
         changes_postcode = init_data["changes"]
         changes_postcode[list(changes_postcode.keys())[0]][
@@ -143,7 +148,7 @@ class Source:
         uprn_chage_element: tuple[str, dict] | None = None
 
         for change_id, chage_dict in data["changes"].items():
-            if "UPRN" in chage_dict and chage_dict["UPRN"]["value"].strip().strip(
+            if "uprn" in chage_dict and chage_dict["uprn"]["value"].strip().strip(
                 "0"
             ) == str(self._uprn).strip().strip("0"):
                 uprn_chage_element = (change_id, chage_dict)
