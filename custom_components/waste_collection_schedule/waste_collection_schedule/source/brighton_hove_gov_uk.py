@@ -116,7 +116,7 @@ class Source:
         operation_id_uprn = match_uprn.group(1)
 
         changes_postcode = init_data["changes"]
-        changes_postcode[list(changes_postcode.keys())[0]][
+        changes_postcode[list(changes_postcode.keys())[1]][
             "SearchString"
         ] = {"value": self._postcode}
 
@@ -163,7 +163,9 @@ class Source:
                      if o["guid"] == uprn_chage_element[0]])
             )
         ]
-        params = {"Collection": {"guid": objects[-1]["guid"]}}
+        params = {"Collection": {"guid": objects[-1]["guid"]}, "Address": {
+            "guid": address_obj["guid"],
+        }}
 
         changes = changes_postcode.copy()
         changes[list(changes.keys())[0]]["ShowAddressResults"] = {
