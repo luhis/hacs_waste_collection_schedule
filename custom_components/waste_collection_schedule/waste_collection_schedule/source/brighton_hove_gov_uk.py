@@ -163,7 +163,7 @@ class Source:
                      if o["guid"] == uprn_chage_element[0]])
             )
         ]
-        params = {"Generic_Address": {"guid": objects[-1]["guid"]}}
+        params = {"Collection": {"guid": objects[-1]["guid"]}}
 
         changes = changes_postcode.copy()
         changes[list(changes.keys())[0]]["ShowAddressResults"] = {
