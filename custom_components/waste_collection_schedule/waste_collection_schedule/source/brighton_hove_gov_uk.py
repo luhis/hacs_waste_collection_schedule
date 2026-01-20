@@ -18,9 +18,10 @@ _LOGGER = logging.getLogger(__name__)
 
 
 ICON_MAP = {
-    "Maroon": "mdi:trash-can",
-    "Grey": "mdi:recycle",
-    "Blue": "mdi:leaf",
+    "Refuse": "mdi:trash-can",
+    "Recycling": "mdi:recycle",
+    "Food waste": "mdi:compost",
+    "Garden Waste": "mdi:leaf",
 }
 
 BASE_URL = "https://enviroservices.brighton-hove.gov.uk/"
